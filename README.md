@@ -5,6 +5,8 @@ Also compare memory usage of HyperLogLog and a regular set in.
 
 ## Results
 
+With 10000000 values and a cardinality of 9982031
+
 |  | Accuracy | Memory Usage|
 | --- | ----------- |--|
 | HyperLogLog | 99.89% | 14KB |
