@@ -12,7 +12,7 @@ r = redis.Redis(host='localhost', port=6379, db=0)
 
 def _generate_fake_ips(n):
     """
-    Try to generate a list n of public ips, cardinality and uniqueness is not guaranteed 
+    Generate a list n of public ips, uniqueness is not guaranteed 
     """
     fake = Faker()
     fake.add_provider(internet)
@@ -30,13 +30,13 @@ for ip in fake_ips:
 for ip in fake_ips:
    r.sadd(SET_KEY, ip)  # Add ip to a regular set
 
-hyper_loglog_count = r.pfcount(HYPERLOGLOG_KEY)  # Get cardinality from hyperloglog
+hyperloglog_count = r.pfcount(HYPERLOGLOG_KEY)  # Get cardinality from hyperloglog
 set_count = r.scard(SET_KEY) # Get cardinality from set
-hyper_loglog_mem_usage = r.memory_usage(HYPERLOGLOG_KEY) / 1024 # Get memory usage from hyperloglog
+hyperloglog_mem_usage = r.memory_usage(HYPERLOGLOG_KEY) / 1024 # Get memory usage from hyperloglog
 set_mem_usage = r.memory_usage(SET_KEY) / 1024  # Get memory usage from set
 cardinality = len(set(fake_ips))  # Compute actual cardinality for reference
 assert cardinality == set_count
 
 print(f"set - count: {set_count}, mem_usage: {set_mem_usage}KiB")
-print(f"hyper_loglog - count: {hyper_loglog_count}, mem_usage: {hyper_loglog_mem_usage}KiB")
-print("error: " + str(round(((cardinality - hyper_loglog_count) / cardinality) * 100, 2)) + "%")
+print(f"hyper_loglog - count: {hyperloglog_count}, mem_usage: {hyperloglog_mem_usage}KiB")
+print("error: " + str(round(((cardinality - hyperloglog_count) / cardinality) * 100, 2)) + "%")
